@@ -1,16 +1,20 @@
+// app/cadastro.js 
+
 import { useState } from 'react'; 
 
 import { View, TextInput, Button, Alert } from 'react-native'; 
 
 import { useRouter } from 'expo-router'; 
 
-import api, { setAuthToken } from '../lib/api'; 
+import api from '../lib/api'; 
 
 import { estilos } from '../styles/estilos'; 
 
  
 
-export default function Login() { 
+export default function Cadastro() { 
+
+  const [nome, setNome] = useState(''); 
 
   const [email, setEmail] = useState(''); 
 
@@ -20,19 +24,19 @@ export default function Login() {
 
  
 
-  const entrar = async () => { 
+  const cadastrar = async () => { 
 
     try { 
 
-      const { data } = await api.post('/usuarios/login', { email, senha }); 
+      await api.post('/usuarios/registrar', { nome, email, senha }); 
 
-      setAuthToken(data.token); 
+      Alert.alert('Cadastro realizado'); 
 
-      router.push('/contatos'); 
+      router.replace('/'); 
 
-    } catch (err) { 
+    } catch (e) { 
 
-      Alert.alert('Erro ao entrar'); 
+      Alert.alert('Erro no cadastro'); 
 
     } 
 
@@ -44,13 +48,13 @@ export default function Login() {
 
     <View style={estilos.container}> 
 
+      <TextInput placeholder="Nome" value={nome} onChangeText={setNome} style={estilos.input} /> 
+
       <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={estilos.input} autoCapitalize="none" /> 
 
       <TextInput placeholder="Senha" value={senha} onChangeText={setSenha} secureTextEntry style={estilos.input} /> 
 
-      <Button title="Entrar" onPress={entrar} /> 
-
-      <Button title="Cadastrar" onPress={() => router.push('/cadastro')} /> 
+      <Button title="Cadastrar" onPress={cadastrar} /> 
 
     </View> 
 
